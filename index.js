@@ -8,7 +8,7 @@ app.use(cors())
 app.use(express.json())
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@cluster0.5y6t7ws.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -27,14 +27,21 @@ async function run() {
 
     const jobCollection = client.db("a11DB").collection("jobs")
 
-    app.get('/jobs/catagory/:catagory' , async(req , res) => {
+    app.get('/catagory/:catagory' , async(req , res) => {
       const catagory = req.params.catagory ;
-      console.log(catagory)
+      console.log(catagorys)
       const filter = { catagory : catagory};
       const cursor = jobCollection.find(filter);
       const result = await cursor.toArray();
       res.send(result);
   })
+
+  app.get('/jobs/catagory/:_id' , async(req , res) => {
+    const id = req.params._id ;
+    const query = {_id: new ObjectId(id)}
+    const result = await jobCollection.findOne(query);
+    res.send(result);
+})
 
     app.get('/jobs', async(req , res) => {
         const cursor = jobCollection.find();
