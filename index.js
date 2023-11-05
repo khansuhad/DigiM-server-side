@@ -66,10 +66,34 @@ async function run() {
       res.send(result)
     
 })
+  app.patch( '/bids/:_id' , async(req , res) => {
+    const id = req.params._id;
+    console.log(id);
+    const filter = { _id : new ObjectId(id)} ;
+    const updateStatus = req.body ;
+    console.log(updateStatus);
+    const bidsAcceptStatus = {
+        $set: {
+          status : updateStatus.status ,  
+
+        },
+      };
+      const result = await bidCollection.updateOne(filter , bidsAcceptStatus);
+      res.send(result)
+    
+})
+
+
   app.get('/jobs/catagory/:_id' , async(req , res) => {
     const id = req.params._id ;
     const query = {_id: new ObjectId(id)}
     const result = await jobCollection.findOne(query);
+    res.send(result);
+})
+  app.get('/bids/:_id' , async(req , res) => {
+    const id = req.params._id ;
+    const query = {_id: new ObjectId(id)}
+    const result = await bidCollection.findOne(query);
     res.send(result);
 })
 
