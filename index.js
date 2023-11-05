@@ -35,7 +35,28 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
   })
+  app.put( '/jobs/catagory/:_id' , async(req , res) => {
+    const id = req.params._id;
+    console.log(id);
+  const filter = { _id : new ObjectId(id)} ;
+    const options = { upsert: true };
+    const updateJob = req.body ;
+    const job = {
+        $set: {
+         jobTitle : updateJob.jobTitle ,
+         deadLine : updateJob.deadLine ,
+         minimumPrice : updateJob.minimumPrice ,
+         maximumPrice : updateJob.maximumPrice ,
+         description : updateJob.description 
+         
+         
 
+        },
+      };
+      const result = await jobCollection.updateOne(filter , job , options);
+      res.send(result)
+    
+})
   app.get('/jobs/catagory/:_id' , async(req , res) => {
     const id = req.params._id ;
     const query = {_id: new ObjectId(id)}
