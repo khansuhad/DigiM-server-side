@@ -26,6 +26,7 @@ async function run() {
     await client.connect();
 
     const jobCollection = client.db("a11DB").collection("jobs")
+    const bidCollection = client.db("a11DB").collection("bids")
 
     app.get('/catagory/:catagory' , async(req , res) => {
       const catagory = req.params.catagory ;
@@ -77,10 +78,22 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
     })
+    app.get('/bids', async(req , res) => {
+        const cursor = bidCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
 
     app.post('/jobs', async(req, res) => {
         const job = req.body ;
         const result = await jobCollection.insertOne(job)
+        res.send(result);
+        
+    })
+    app.post('/bids', async(req, res) => {
+        const bid = req.body ;
+        console.log(bid)
+        const result = await bidCollection.insertOne(bid)
         res.send(result);
         
     })
