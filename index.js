@@ -35,6 +35,14 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
   })
+  app.delete('/jobs/catagory/:_id' , async(req , res) => {
+    const id = req.params._id;
+    
+    const query = {_id : new ObjectId(id)};
+    const result = await jobCollection.deleteOne(query);
+    res.send(result)
+
+})
   app.put( '/jobs/catagory/:_id' , async(req , res) => {
     const id = req.params._id;
     console.log(id);
