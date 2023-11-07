@@ -161,7 +161,7 @@ app.get('/bids',logger,verifyToken, async(req,res) => {
   else{
     return res.status(403).send({message : 'forbidden access'})
   }
-  const result = await bidCollection.find(query).toArray();
+  const result = await bidCollection.find(query).sort({status : 1}).toArray();
   res.send(result)
 })
 
