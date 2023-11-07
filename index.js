@@ -87,7 +87,7 @@ async function run() {
     res.send(result)
 
 })
-  app.put( '/jobs/catagory/:_id' , async(req , res) => {
+  app.patch( '/jobs/catagory/:_id' , async(req , res) => {
     const id = req.params._id;
     console.log(id);
   const filter = { _id : new ObjectId(id)} ;
@@ -95,6 +95,7 @@ async function run() {
     const updateJob = req.body ;
     const job = {
         $set: {
+          catagory: updateJob.catagory,
          jobTitle : updateJob.jobTitle ,
          deadLine : updateJob.deadLine ,
          minimumPrice : updateJob.minimumPrice ,
