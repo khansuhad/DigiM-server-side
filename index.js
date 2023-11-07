@@ -48,8 +48,8 @@ const verifyToken = async(req , res, next) => {
 }
 async function run() {
   try {
-   
-    await client.connect();
+    // await client.connect();
+
 
     const jobCollection = client.db("a11DB").collection("jobs")
     const bidCollection = client.db("a11DB").collection("bids")
@@ -159,6 +159,18 @@ app.get('/bids',logger,verifyToken, async(req,res) => {
     const result = await bidCollection.findOne(query);
     res.send(result);
 })
+  app.get('/jobs/:email',logger,verifyToken, async(req , res) => {
+    const id = req?.params?.email ;
+    console.log(id , req?.user?.email )
+    if(req?.user?.email !== id){
+      return res.status(403).send({message : 'forbidden access'})
+ 
+ }
+    console.log(id)
+    const filter = {email: id }
+    const result = await jobCollection.find(filter).toArray();
+    res.send(result);
+})
 
     app.get('/jobs', async(req , res) => {
         const cursor = jobCollection.find();
@@ -196,9 +208,8 @@ app.get('/bids',logger,verifyToken, async(req,res) => {
         res.send(result);
         
     })
-
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
   
   }
