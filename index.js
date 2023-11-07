@@ -27,11 +27,12 @@ const client = new MongoClient(uri, {
   }
 });
 const logger = (req , res , next) => {
+  console.log('log : info',req.method , req.url);
   next();
 }
-const verifyToken = (req , res, next) => {
-  const token = req.cookies?.token;
-  console.log(token)
+const verifyToken = async(req , res, next) => {
+  const token = req?.cookies?.token;
+  console.log('tok tok tokennn',token);
   if(!token){
     return res.status(401).send({message : 'unauthorized access'})
   }
@@ -55,7 +56,7 @@ async function run() {
 
     app.post('/jwt' , async(req,res) => {
       const user = req.body ;
-      const token = jwt.sign(user , process.env.ACCESS_TOKEN_SECRET ,{expiresIn :'1h'})
+      const token = jwt.sign(user , process.env.ACCESS_TOKEN_SECRET ,{expiresIn :'10h'})
       res
       .cookie('token', token ,{
         httpOnly: true ,
@@ -131,18 +132,39 @@ async function run() {
     const result = await jobCollection.findOne(query);
     res.send(result);
 })
-app.get('/bids',async (req,res) => {
+// app.get('/bids', async(req,res) => {
+//   let query = {}
+//   const coook = await req?.user;
+//   console.log('nnnn', coook );
+//   console.log('email',req?.user?.email , req?.query?.email)
+//   // if(req?.user?.email !== req?.query?.myEmail){
+//   //   return res.status(403).send({message : 'forbidden access'})
+//   // }
+//   if(req.query?.email){
+//       query = { email : req.query?.email }
+//   }
+//   const result = await bidCollection.find(query).toArray();
+//   res.send(result)
+// })
+app.get('/bids',logger,verifyToken, async(req,res) => {
   let query = {}
+  const coook = await req?.user;
+  console.log('nnnn', coook );
+  console.log('emaillllllll...',req?.user?.email , req?.query)
+  if(req?.user?.email === req?.query?.myEmail){
+       query = { myEmail : req.query?.myEmail }
   
-  if(req.user?.email !== req.query?.email){
-    return res.status(403).send({message : 'forbidden access'})
   }
-  if(req.query?.myEmail){
-      query = { myEmail : req.query?.myEmail }
+  else if( req?.user?.email === req.query?.email){
+     query = { email : req.query?.email }
+  }
+  else{
+    return res.status(403).send({message : 'forbidden access'})
   }
   const result = await bidCollection.find(query).toArray();
   res.send(result)
 })
+
   app.get('/bids/:_id' , async(req , res) => {
     const id = req.params._id ;
     const query = {_id: new ObjectId(id)}
