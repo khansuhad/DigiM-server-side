@@ -8,7 +8,8 @@ const port = process.env.PORT || 5000 ;
 
 app.use(cors({
   origin:[
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://digim-19266.web.app'
   ],
   credentials: true 
 }))
@@ -132,20 +133,7 @@ async function run() {
     const result = await jobCollection.findOne(query);
     res.send(result);
 })
-// app.get('/bids', async(req,res) => {
-//   let query = {}
-//   const coook = await req?.user;
-//   console.log('nnnn', coook );
-//   console.log('email',req?.user?.email , req?.query?.email)
-//   // if(req?.user?.email !== req?.query?.myEmail){
-//   //   return res.status(403).send({message : 'forbidden access'})
-//   // }
-//   if(req.query?.email){
-//       query = { email : req.query?.email }
-//   }
-//   const result = await bidCollection.find(query).toArray();
-//   res.send(result)
-// })
+
 app.get('/bids',logger,verifyToken, async(req,res) => {
   let query = {}
   const coook = await req?.user;
